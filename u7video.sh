@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="2.0"
+VERSION="2.1"
 SERVER_NICKNAME="robert"
 SERVER_PATH="/home/web/u7tv.ru/www/video"
 
