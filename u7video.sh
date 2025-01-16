@@ -1,8 +1,7 @@
 #!/bin/bash
 
 VERSION="2.0"
-SERVER_USER="web"
-SERVER_ADDRESS="213.189.220.204"
+SERVER_NICKNAME="robert"
 SERVER_PATH="/home/web/u7tv.ru/www/video"
 
 validate_filename() {
@@ -28,8 +27,13 @@ upload_files() {
         exit 1
     fi
 
-    scp "${base_name}.min.mp4" "${SERVER_USER}@${SERVER_ADDRESS}:${SERVER_PATH}/${base_name}.mp4"
-    scp "${base_name}.min.webm" "${SERVER_USER}@${SERVER_ADDRESS}:${SERVER_PATH}/${base_name}.webm"
+    if [[ -z "$SERVER_NICKNAME" ]]; then
+        echo "Отсутствует информация об имени сервера"
+        exit 1
+    fi
+
+    scp "${base_name}.min.mp4" "${SERVER_NICKNAME}:${SERVER_PATH}/${base_name}.mp4"
+    scp "${base_name}.min.webm" "${SERVER_NICKNAME}:${SERVER_PATH}/${base_name}.webm"
 }
 
 show_help() {
@@ -60,7 +64,7 @@ FILE="$2"
 
 if [[ "$ACTION" != "version" && "$ACTION" != "help" ]]; then
     if [[ -z "$FILE" ]]; then
-        echo "Ошибка: укажите имя файла."
+        echo "Не указано имя исходного файла"
         exit 1
     fi
 
