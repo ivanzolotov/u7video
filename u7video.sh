@@ -50,7 +50,6 @@ show_help() {
 EOF
 }
 
-# Основная логика
 if [[ "$1" == "" || "$1" == "help" ]]; then
     show_help
     exit 0
@@ -59,7 +58,6 @@ elif [[ "$1" == "version" ]]; then
     exit 0
 fi
 
-# Если ключ не указан, предполагается both + upload
 if [[ -z "$2" ]]; then
     if [[ "$1" =~ ^(mp4|webm|both|upload)$ ]]; then
         echo "Не указано имя исходного файла"
