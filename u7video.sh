@@ -6,7 +6,7 @@ SERVER_PATH="/home/web/u7tv.ru/www/video"
 
 validate_filename() {
     if [[ ! "$1" =~ ^[0-9]{4}\.mp4$ ]]; then
-        echo "Неверное имя исходного файла"
+        echo "Имя файла не соответствует формату: должно быть 4 цифры и .mp4"
         exit 1
     fi
 }
@@ -60,7 +60,11 @@ elif [[ "$1" == "version" ]]; then
 fi
 
 # Если ключ не указан, предполагается both + upload
-if [[ "$2" == "" ]]; then
+if [[ -z "$2" ]]; then
+    if [[ "$1" =~ ^(mp4|webm|both|upload)$ ]]; then
+        echo "Не указано имя исходного файла"
+        exit 1
+    fi
     ACTION="both-upload"
     FILE="$1"
 else
@@ -69,11 +73,6 @@ else
 fi
 
 if [[ "$ACTION" != "version" && "$ACTION" != "help" ]]; then
-    if [[ -z "$FILE" ]]; then
-        echo "Не указано имя исходного файла"
-        exit 1
-    fi
-
     validate_filename "$FILE"
 
     case "$ACTION" in
