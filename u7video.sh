@@ -4,9 +4,24 @@ VERSION="2.1"
 SERVER_NICKNAME="robert"
 SERVER_PATH="/home/web/u7tv.ru/www/video"
 
+MSG_INVALID_FILENAME="Invalid filename format: must be 4 digits followed by .mp4"
+MSG_MISSING_FILENAME="Missing filename"
+MSG_MISSING_FILES="Missing files for upload"
+MSG_MISSING_SERVER_NICKNAME="Missing server nickname information"
+MSG_HELP="Usage: u7video [option] <filename>
+Options:
+  mp4       Create a compressed MP4 version
+  webm      Create a compressed WebM version
+  both      Create both MP4 and WebM versions
+  upload    Upload compressed videos to the server
+  version   Show version information
+  help      Display this help message
+If no option is specified, both conversion and upload will be performed."
+MSG_VERSION="u7video version $VERSION"
+
 validate_filename() {
     if [[ ! "$1" =~ ^[0-9]{4}\.mp4$ ]]; then
-        echo "Имя файла не соответствует формату: должно быть 4 цифры и .mp4"
+        echo "$MSG_INVALID_FILENAME"
         exit 1
     fi
 }
@@ -23,12 +38,12 @@ upload_files() {
     local base_name="${1%.mp4}"
     
     if [[ ! -f "${base_name}.min.mp4" || ! -f "${base_name}.min.webm" ]]; then
-        echo "Отсутствуют файлы для загрузки"
+        echo "$MSG_MISSING_FILES"
         exit 1
     fi
 
     if [[ -z "$SERVER_NICKNAME" ]]; then
-        echo "Отсутствует информация об имени сервера"
+        echo "$MSG_MISSING_SERVER_NICKNAME"
         exit 1
     fi
 
@@ -37,30 +52,20 @@ upload_files() {
 }
 
 show_help() {
-    cat << EOF
-Использование: u7video [ключ] <имя_файла>
-Ключи:
-  mp4       Создать сжатую MP4-версию видео
-  webm      Создать сжатую WebM-версию видео
-  both      Создать обе версии видео
-  upload    Загрузить сжатые версии видео на сервер
-  version   Информация о версии
-  help      Показать эту справку
-Если ключи не указаны, выполняются действия both и upload.
-EOF
+    echo "$MSG_HELP"
 }
 
 if [[ "$1" == "" || "$1" == "help" ]]; then
     show_help
     exit 0
 elif [[ "$1" == "version" ]]; then
-    echo "u7video version $VERSION"
+    echo "$MSG_VERSION"
     exit 0
 fi
 
 if [[ -z "$2" ]]; then
     if [[ "$1" =~ ^(mp4|webm|both|upload)$ ]]; then
-        echo "Не указано имя исходного файла"
+        echo "$MSG_MISSING_FILENAME"
         exit 1
     fi
     ACTION="both-upload"
