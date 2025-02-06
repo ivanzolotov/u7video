@@ -59,8 +59,14 @@ elif [[ "$1" == "version" ]]; then
     exit 0
 fi
 
-ACTION="$1"
-FILE="$2"
+# Если ключ не указан, предполагается both + upload
+if [[ "$2" == "" ]]; then
+    ACTION="both-upload"
+    FILE="$1"
+else
+    ACTION="$1"
+    FILE="$2"
+fi
 
 if [[ "$ACTION" != "version" && "$ACTION" != "help" ]]; then
     if [[ -z "$FILE" ]]; then
@@ -82,6 +88,11 @@ if [[ "$ACTION" != "version" && "$ACTION" != "help" ]]; then
             process_webm "$FILE"
             ;;
         upload)
+            upload_files "$FILE"
+            ;;
+        both-upload)
+            process_mp4 "$FILE"
+            process_webm "$FILE"
             upload_files "$FILE"
             ;;
         *)
